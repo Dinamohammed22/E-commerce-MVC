@@ -1,4 +1,14 @@
 ﻿@using System.Security.Claims
+﻿@using E_commerce.Models;
+@using E_commerce_MVC.Repository;
+@using E_commerce_MVC.Utility;
+@using E_commerce_MVC.viewModels;
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Identity;
+@using Microsoft.AspNetCore.Mvc;
+@using Microsoft.EntityFrameworkCore;
+@inject IHttpContextAccessor HttpContextAccessor
+
 <!doctype html>
 <html class="no-js" lang="zxx">
 <head>
@@ -56,9 +66,9 @@
                             </div>
                             <!-- Main-menu -->
                             <partial name="_NavPartial" />
-                        <div class="header-right1 d-flex align-items-center">
-                            <!-- Social -->
-                            <div class="header-social d-none d-md-block">
+                            <div class="header-right1 d-flex align-items-center">
+                                <!-- Social -->
+                                <div class="header-social d-none d-md-block">
                                     @{
                                         var id = User.FindFirstValue(ClaimTypes.NameIdentifier);
                                     }
@@ -69,40 +79,58 @@
                                     {
                                         <a href="@Url.Action("Index", "WishList", new { id = id })" title="Wishlist">
                                             <i class="fa fa-heart"></i>
-                                        </a>}
-                                        </div>
-                                    
-                                    <!-- Search Box -->
-                            <div class="search d-none d-md-block">
-                                <ul class="d-flex align-items-center">
-                                    <li class="mr-15">
-                                        <div class="nav-search search-switch">
-                                            <i class="ti-search"></i>
-                                        </div>
-                                    </li>
-                                    <li>
-                                        <div class="card-stor">
-                                            <img src="/img/gallery/card.svg" alt="">
-                                            <span>0</span>
-                                        </div>
-                                    </li>
-                                </ul>
+                                        </a>
+                                    }
+                                </div>
+
+                                <!-- Search Box -->
+                                <div class="search d-none d-md-block">
+                                    <ul class="d-flex align-items-center">
+                                        <li class="mr-15">
+                                            <div class="nav-search search-switch">
+                                                <i class="ti-search"></i>
+                                            </div>
+                                        </li>
+                                        <li>
+                                            @if (HttpContextAccessor.HttpContext.Session.GetInt32(CartCount.sessionCount) != null)
+                                            {
+                                                var count = HttpContextAccessor.HttpContext.Session.GetInt32(CartCount.sessionCount);
+                                            <li class="nav-item">
+                                                <a asp-controller="Cart" asp-action="Index" class="nav-link">
+                                                    <div class="card-stor">
+                                                        <img src="/img/gallery/card.svg" alt="">
+                                                        <span>(@count)</span>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                            }
+                                            else
+                                            {
+                                            <li>
+                                                <div class="card-stor">
+                                                    <img src="/img/gallery/card.svg" alt="">
+                                                    <span>0</span>
+                                                </div>
+                                            </li>
+                                            }
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
-                        </div>
-                        <!-- Mobile Menu -->
-                        <div class="col-12">
-                            <div class="mobile_menu d-block d-lg-none"></div>
+                            <!-- Mobile Menu -->
+                            <div class="col-12">
+                                <div class="mobile_menu d-block d-lg-none"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Header End -->
+            <!-- Header End -->
     </header>
     <!-- header end -->
     @RenderBody()
 
-    
+
     <!-- JS here -->
     <!-- Jquery, Popper, Bootstrap -->
     <script src="/js/vendor/modernizr-3.5.0.min.js"></script>
@@ -121,7 +149,7 @@
     <script src="/js/jquery.magnific-popup.js"></script>
     <script src="/js/gijgo.min.js"></script>
 
-    <!-- Nice-select, sticky,Progress -->
+    <!-- Nice-select, sticky,Progress 
     <script src="/js/jquery.nice-select.min.js"></script>
     <script src="/js/jquery.sticky.js"></script>
     <script src="/js/jquery.barfiller.js"></script>
